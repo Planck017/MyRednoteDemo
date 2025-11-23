@@ -54,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
             if (user != null) {
 
                 // 登录成功，保存token到sp中
-                saveTokenToSharedPreferences(user.username)
+                saveTokenToSharedPreferences(user.userName)
                 // 登录成功，显示一个Toast提示
                 Toast.makeText(this@LoginActivity, "登录成功", Toast.LENGTH_SHORT).show()
                 // 登录成功，跳转到主界面
@@ -82,8 +82,8 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             if (!database.userDao().isUsernameExists("testuser")) {
                 val sampleUser = com.example.mydemo.data.model.User(
-                    username = "testuser",
-                    password = "password123"
+                    userName = "testuser",
+                    userPassword = "password123"
                 )
                 database.userDao().insertUser(sampleUser)
             }

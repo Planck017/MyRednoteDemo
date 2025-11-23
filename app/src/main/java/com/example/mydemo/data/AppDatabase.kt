@@ -5,11 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.mydemo.data.dao.UserDao
+import com.example.mydemo.data.model.Comment
+import com.example.mydemo.data.model.Image
+import com.example.mydemo.data.model.Note
 import com.example.mydemo.data.model.User
 
 @Database(
-    entities = [User::class],
-    version = 1,
+    entities = [User::class, Comment::class, Note::class, Image::class],
+    version = 2,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
