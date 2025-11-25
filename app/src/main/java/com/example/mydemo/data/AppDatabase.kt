@@ -4,6 +4,9 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.mydemo.data.dao.NoteDao
 import com.example.mydemo.data.dao.UserDao
 import com.example.mydemo.data.model.Comment
 import com.example.mydemo.data.model.Image
@@ -12,11 +15,13 @@ import com.example.mydemo.data.model.User
 
 @Database(
     entities = [User::class, Comment::class, Note::class, Image::class],
-    version = 2,
+    version = 1,
     exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
+
+    abstract fun noteDao(): NoteDao
 
     companion object {
 
@@ -28,8 +33,9 @@ abstract class AppDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     AppDatabase::class.java,
-                    "user_database"
-                ).build()
+                    "planck_database"
+                ).fallbackToDestructiveMigration().build()
+
                 INSTANCE = instance
                 instance
             }

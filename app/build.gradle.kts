@@ -70,6 +70,8 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.monitor)
     kapt(libs.androidx.room.compiler) // 使用kapt而不是implementation
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

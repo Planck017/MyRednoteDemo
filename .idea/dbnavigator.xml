@@ -6,12 +6,18 @@
   </component>
   <component name="DBNavigator.Project.DataEditorManager">
     <record-view-column-sorting-type value="BY_INDEX" />
-    <value-preview-text-wrapping value="true" />
+    <value-preview-text-wrapping value="false" />
     <value-preview-pinned value="false" />
   </component>
   <component name="DBNavigator.Project.DatabaseAssistantManager">
     <assistants>
       <assistant-state connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" default-profile-name="" selected-conversation-id="" assistant-type="GENERIC" availability="UNAVAILABLE" acknowledgement="NONE">
+        <conversations />
+      </assistant-state>
+      <assistant-state connection-id="6f778798-f6e3-491d-829a-37219af4b45e" default-profile-name="" selected-conversation-id="" assistant-type="GENERIC" availability="UNAVAILABLE" acknowledgement="NONE">
+        <conversations />
+      </assistant-state>
+      <assistant-state connection-id="1b04de52-5fb1-4990-b6ee-115e28a0c977" default-profile-name="" selected-conversation-id="" assistant-type="GENERIC" availability="UNAVAILABLE" acknowledgement="NONE">
         <conversations />
       </assistant-state>
     </assistants>
@@ -23,35 +29,29 @@
     <loaded-nodes />
   </component>
   <component name="DBNavigator.Project.DatabaseConsoleManager">
-    <connection id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f">
-      <console name="Connection" type="STANDARD" schema="main" session="Main" />
+    <connection id="6f778798-f6e3-491d-829a-37219af4b45e">
+      <console name="Connection" type="STANDARD" schema="main" session="Main"><![CDATA[select * from note]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files>
-      <object connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" object-ref="schemas/main/tables/users" />
-    </open-files>
+    <open-files />
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
-    <connection id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" />
-  </component>
-  <component name="DBNavigator.Project.DatasetFilterManager">
-    <filter-actions connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" dataset="main.users" active-filter-id="510d2598-0863-4c21-aa2f-f9f3a179a380">
-      <filter id="510d2598-0863-4c21-aa2f-f9f3a179a380" name="Filter" temporary="false" custom-name="false" type="basic" join-type="AND" />
-    </filter-actions>
-    <filter-actions connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" dataset="main.sqlite_sequence" active-filter-id="" />
-    <filter-actions connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" dataset="main.android_metadata" active-filter-id="69b5ddb8-05b5-4dfd-a9b2-10d098110b14">
-      <filter id="69b5ddb8-05b5-4dfd-a9b2-10d098110b14" name="Filter" temporary="false" custom-name="false" type="basic" join-type="AND">
-        <condition column="locale" operator="=" value="" active="true" />
-      </filter>
-    </filter-actions>
-    <filter-actions connection-id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" dataset="main.room_master_table" active-filter-id="" />
+    <connection id="6f778798-f6e3-491d-829a-37219af4b45e" />
   </component>
   <component name="DBNavigator.Project.ExecutionManager">
     <retain-sticky-names value="false" />
+  </component>
+  <component name="DBNavigator.Project.MethodExecutionManager">
+    <method-browser />
+    <execution-history>
+      <group-entries value="true" />
+      <execution-inputs />
+    </execution-history>
+    <execution-variables-cache />
   </component>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
@@ -62,7 +62,7 @@
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
-      <connection source-id="" id="dd795d7d-1c56-4036-bc5a-0ef9e1f41f9f" active="true" signed="true">
+      <connection source-id="" id="6f778798-f6e3-491d-829a-37219af4b45e" active="true" signed="true">
         <database>
           <name value="Connection" />
           <description value="" />
@@ -82,7 +82,7 @@
           <protocol value="" />
           <url-parameters />
           <files>
-            <file path="C:\Users\planck\AppData\Local\Google\AndroidStudio2025.2.1\device-explorer\Pixel 9 Pro API 35\_\data\data\com.example.mydemo\databases\user_database" schema="main" />
+            <file path="C:\Users\planck\AppData\Local\Google\AndroidStudio2025.2.1\device-explorer\Pixel 9 Pro API 35\_\data\data\com.example.mydemo\databases\planck_database" schema="main" />
           </files>
           <type value="NONE" />
           <user value="" />

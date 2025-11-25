@@ -9,6 +9,8 @@ import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.mydemo.data.AppDatabase
+import com.example.mydemo.data.model.Note
+import com.example.mydemo.data.model.User
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -80,10 +82,19 @@ class LoginActivity : AppCompatActivity() {
     // 插入一个测试用户到数据库中（如果不存在）
     private fun insertSampleUserIfNotExists() {
         lifecycleScope.launch {
-            if (!database.userDao().isUsernameExists("testuser")) {
-                val sampleUser = com.example.mydemo.data.model.User(
-                    userName = "testuser",
-                    userPassword = "password123"
+            val sampleNote = Note(
+                userId = 1,
+                noteTitle = "Test Note",
+                noteContent = "Test Content",
+                likes = 10,
+                comments = 5,
+            )
+            database.noteDao().insertNote(sampleNote)
+
+            if (database.userDao().getUserByUsernameAndPassword("test", "123456") == null) {
+                val sampleUser = User(
+                    userName = "test",
+                    userPassword = "123456",
                 )
                 database.userDao().insertUser(sampleUser)
             }

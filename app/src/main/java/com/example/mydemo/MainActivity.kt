@@ -22,7 +22,8 @@ class MainActivity : AppCompatActivity() {
         setBottomNavigationBar()
         // 默认显示首页 Fragment
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
+            supportFragmentManager
+                .beginTransaction()
                 .replace(R.id.nav_host_fragment, HomeFragment())
                 .commit()
         }
