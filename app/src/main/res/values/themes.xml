@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.MyDemo" parent="Theme.AppCompat.Light.NoActionBar" />
+
     <style name="BottomNavTextAppearance" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">@dimen/bottom_nav_text_size</item>
     </style>
@@ -8,7 +10,8 @@
     <style name="Widget.BottomNavigationView.NoIconContainer" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="itemIconTint">@null</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.BottomNavigation.Active</item>
-        <item name="itemTextAppearanceInactive">@style/TextAppearance.BottomNavigation.Inactive</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.BottomNavigation.Inactive
+        </item>
     </style>
 
     <style name="TextAppearance.BottomNavigation.Active" parent="TextAppearance.MaterialComponents.Caption">

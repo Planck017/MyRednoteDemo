@@ -1,9 +1,9 @@
-package com.example.mydemo
+package com.example.mydemo.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.example.mydemo.R
 import com.example.mydemo.ui.fragment.AddFragment
 import com.example.mydemo.ui.fragment.HomeFragment
 import com.example.mydemo.ui.fragment.MarketFragment

@@ -1,13 +1,13 @@
-package com.example.mydemo
+package com.example.mydemo.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.mydemo.R
 import com.example.mydemo.data.AppDatabase
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.data.model.User

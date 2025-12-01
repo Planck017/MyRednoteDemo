@@ -3,19 +3,28 @@ package com.example.mydemo.ui.fragment
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.mydemo.R
 import com.example.mydemo.data.AppDatabase
+import com.example.mydemo.data.api.NoteService
 import com.example.mydemo.data.model.Note
+import com.example.mydemo.repository.NoteRepository
+import com.example.mydemo.view.NoteViewModel
+import com.example.mydemo.view.NoteViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class HomeFragment : Fragment() {
@@ -25,10 +34,9 @@ class HomeFragment : Fragment() {
     private val noteList = mutableListOf<Note>()
     private lateinit var database: AppDatabase
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+    private lateinit var noteViewModel: NoteViewModel
 
     private var isLoading = false
-    private var currentPage = 0
-    private val pageSize = 20
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +52,41 @@ class HomeFragment : Fragment() {
         recyclerView = view.findViewById(R.id.recyclerView)
         // 初始化SwipeRefreshLayout
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
+        // 初始化ViewModel
+        val noteService = Retrofit.Builder()
+            .baseUrl("http://172.21.96.1:8080/") // 替换为你的API基础URL
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(NoteService::class.java)
+
+        val noteRepository = NoteRepository(noteService)
+        noteViewModel = ViewModelProvider(this, NoteViewModelFactory(noteRepository))[NoteViewModel::class.java]
         // 初始化RecyclerView
         setupRecyclerView()
         // 初始化SwipeRefreshLayout
         setupSwipeRefresh()
+        // 初始化数据观察者（只初始化一次）
+        setupDataObserver()
+
         if (noteList.isEmpty()) {
             loadNotes(false)
         }
         return view
+    }
+
+
+    /**
+     * 设置数据观察者，只在初始化时调用一次
+     */
+    private fun setupDataObserver() {
+        noteViewModel.notes.observe(viewLifecycleOwner) { newNotes ->
+            // 确保数据不为空
+            if (newNotes != null) {
+                noteList.clear()
+                noteList.addAll(newNotes)
+                noteAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     /**
@@ -77,10 +112,10 @@ class HomeFragment : Fragment() {
                     val totalItemCount = gridLayoutManager.itemCount
                     val firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition()
 
-
                     if (!isLoading // 确保不在加载中
                         && visibleItemCount > 0 && // 确保有可见项
                         visibleItemCount + firstVisibleItemPosition >= totalItemCount  // 确保滚动到了最后一项
+                        && dy > 0 // 确保是向下滚动
                         ) { // 确保是向下滚动
                         loadNotes(true)
                     }
@@ -95,7 +130,6 @@ class HomeFragment : Fragment() {
          */
     private fun setupSwipeRefresh(){
         swipeRefreshLayout.setOnRefreshListener {
-            currentPage = 0
             noteList.clear()
             noteAdapter.notifyDataSetChanged()
             loadNotes(false)
@@ -108,35 +142,47 @@ class HomeFragment : Fragment() {
      * @param isLoadMore true表示加载更多，false表示刷新数据
      */
     private fun loadNotes(isLoadMore: Boolean) {
+        // isLoading 确保不会重复加载
         if (isLoading) return
 
         isLoading = true
+
+        // isLoadMore 为 false 显示刷新动画
         if (!isLoadMore) {
-            // 如果不是加载更多，则显示刷新动画
             swipeRefreshLayout.isRefreshing = true
         }
+
+
         // 使用协程替代Thread
         lifecycleScope.launch {
             try {// 模拟延迟
                 delay(1500)
-                val newNotes = if (isLoadMore) {
-                    currentPage++
-                    // 从数据库中查询id大于等于当前最大id的note
-                    database.noteDao().getNotesAfterId(noteList.lastOrNull()?.noteId ?: 0)
-                } else {
-                    currentPage = 0
-                    // 从数据库中查询前20条note
-                    database.noteDao().getNext20Notes()
+                // isLoadMore 为 true 加载更多数据
+                if (isLoadMore){
+                    if (noteList.isNotEmpty()){
+                        val id = noteViewModel.getLastNoteId() ?: 0
+                        Log.d("HomeFragment", "当前最后一项id为$id")
+                        val nextNotes = noteViewModel.loadNextNotes(id)
+                        if (nextNotes.isEmpty()){
+                            Toast.makeText(context, "没有更多数据了", Toast.LENGTH_SHORT).show()
+                        } else {
+                            // 有更多数据，添加到列表末尾
+                            val startPosition = noteList.size
+                            noteList.addAll(nextNotes)
+                            // viewmodel
+                            noteViewModel.addNote(nextNotes)
+                            // 通知适配器有新数据插入
+                            noteAdapter.notifyItemRangeInserted(startPosition, nextNotes.size)
+                        }
+                    }
                 }
-
-                // 更新UI
-                if (isLoadMore) {
-                    val startPosition = noteList.size
-                    noteList.addAll(newNotes)
-                    noteAdapter.notifyItemRangeInserted(startPosition, newNotes.size)
-                } else {
+                // isLoadMore 为 false 刷新数据
+                else{
+                    // 刷新数据，先清空旧数据
                     noteList.clear()
-                    noteList.addAll(newNotes)
+                    val notes = noteViewModel.loadNotes()
+                    noteViewModel.clearNotes()
+                    noteViewModel.addNote(notes)
                     noteAdapter.notifyDataSetChanged()
                 }
 

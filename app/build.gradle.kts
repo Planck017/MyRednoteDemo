@@ -81,6 +81,10 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    // Retrofit 2
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
     // 排除旧版本的注解库
     configurations.all {
         exclude(group = "com.intellij", module = "annotations")

@@ -1,12 +1,12 @@
-package com.example.mydemo
+package com.example.mydemo.ui.activity
 
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
+import com.example.mydemo.R
 
 
 class SplashActivity : AppCompatActivity() {
