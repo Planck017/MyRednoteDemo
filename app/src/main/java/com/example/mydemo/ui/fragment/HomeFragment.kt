@@ -19,6 +19,7 @@ import com.example.mydemo.data.AppDatabase
 import com.example.mydemo.data.api.NoteService
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.repository.NoteRepository
+import com.example.mydemo.ui.adpter.NoteAdapter
 import com.example.mydemo.view.NoteViewModel
 import com.example.mydemo.view.NoteViewModelFactory
 import kotlinx.coroutines.delay

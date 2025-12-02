@@ -26,4 +26,7 @@ data class Note(
     @ColumnInfo(name = "comments")
     val comments: Int = 0,
 
+    @ColumnInfo(name = "cover_name")
+    val coverName: String? = null
+
 ) : Serializable

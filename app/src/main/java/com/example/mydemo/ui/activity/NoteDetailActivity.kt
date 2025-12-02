@@ -10,14 +10,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mydemo.R
 import com.example.mydemo.data.api.CommentService
+import com.example.mydemo.data.api.ImageService
 import com.example.mydemo.data.api.NoteService
 import com.example.mydemo.data.api.UserService
 import com.example.mydemo.data.model.Comment
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.data.model.User
+import com.example.mydemo.ui.adpter.ImageAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +40,9 @@ class NoteDetailActivity : AppCompatActivity() {
     private lateinit var noteService: NoteService
     private lateinit var userService: UserService
     private lateinit var commentService: CommentService
+    private lateinit var imageService: ImageService
+    private lateinit var imageAdapter: ImageAdapter
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // 优化1: 延迟加载ContentView
@@ -67,6 +74,7 @@ class NoteDetailActivity : AppCompatActivity() {
         fetchNoteDetails(noteId)
         fetchNoteUserInfo(noteId)
         fetchNoteUserAvatar(noteId)
+        fetchNoteImages(noteId) // 获取笔记图片
     }
 
     private fun initRetrofit() {
@@ -78,6 +86,7 @@ class NoteDetailActivity : AppCompatActivity() {
         noteService = retrofit.create(NoteService::class.java)
         userService = retrofit.create(UserService::class.java)
         commentService = retrofit.create(CommentService::class.java)
+        imageService = retrofit.create(ImageService::class.java)
     }
 
     private fun initViews(noteId: Int, noteTitle: String) {
@@ -96,6 +105,13 @@ class NoteDetailActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
+
+        // 初始化图片RecyclerView
+        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
+        imageRecyclerView.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        imageAdapter = ImageAdapter(emptyList())
+        imageRecyclerView.adapter = imageAdapter
     }
 
     private fun fetchNoteDetails(noteId: Int) {
@@ -120,6 +136,38 @@ class NoteDetailActivity : AppCompatActivity() {
         }
     }
 
+
+    // 获取笔记图片
+    // TODO 获取笔记图片
+    private fun fetchNoteImages(noteId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.d("NoteDetailActivity", "开始获取笔记图片，ID: $noteId")
+                // 调用API获取笔记图片
+                val response = imageService.getImagesByNoteId(noteId)
+                if (response.isSuccessful) {
+                    val images = response.body() ?: emptyList()
+                    Log.d("NoteDetailActivity", "成功获取笔记图片，数量: ${images.size}")
+
+                    // 在主线程更新UI
+                    withContext(Dispatchers.Main) {
+                        imageAdapter = ImageAdapter(images)
+                        findViewById<RecyclerView>(R.id.imageRecyclerView).adapter = imageAdapter
+                    }
+                } else {
+                    // 处理空列表情况
+                    Log.e("NoteDetailActivity", "获取笔记图片失败，响应码: ${response.code()}")
+                    withContext(Dispatchers.Main) {
+                        imageAdapter = ImageAdapter(emptyList())
+                        findViewById<RecyclerView>(R.id.imageRecyclerView).adapter = imageAdapter
+                        Toast.makeText(this@NoteDetailActivity, "获取笔记图片失败: ${response.message()}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("NoteDetailActivity", "获取笔记图片失败", e)
+            }
+        }
+    }
 
     // 获取发布note的用户信息
     private fun fetchNoteUserInfo(userId: Int) {

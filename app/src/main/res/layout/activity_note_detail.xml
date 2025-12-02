@@ -47,12 +47,12 @@
     </LinearLayout>
 
     <!-- 图片滑动容器 -->
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/imageViewPager"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imageRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginBottom="16dp" />
-
+        android:layout_marginBottom="16dp"
+        android:orientation="horizontal" />
     <!-- 原有内容 -->
     <TextView
         android:id="@+id/detailTitleText"
