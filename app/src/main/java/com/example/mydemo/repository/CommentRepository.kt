@@ -6,10 +6,9 @@ import com.example.mydemo.data.model.Comment
 
 class CommentRepository(private val commentService: CommentService) {
 
-
     suspend fun getComments(noteId: Int): List<Comment> {
         return try {
-            val response = commentService.getComments(noteId)
+            val response = commentService.getNoteComments(noteId)
             if (response.isSuccessful) {
                 response.body() ?: emptyList()
             } else {

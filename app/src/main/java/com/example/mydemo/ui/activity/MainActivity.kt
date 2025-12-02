@@ -1,5 +1,6 @@
 package com.example.mydemo.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -38,7 +39,11 @@ class MainActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.navigation_home -> selectedFragment = HomeFragment()
                 R.id.navigation_market -> selectedFragment = MarketFragment()
-                R.id.navigation_add -> selectedFragment = AddFragment()
+                R.id.navigation_add -> {
+                    val intent = Intent(this, CreateNoteActivity::class.java)
+                    startActivity(intent)
+                    true
+                }
                 R.id.navigation_message -> selectedFragment = MessageFragment()
                 R.id.navigation_myself -> selectedFragment = MyselfFragment()
             }

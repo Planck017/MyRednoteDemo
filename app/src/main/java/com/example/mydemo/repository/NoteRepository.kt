@@ -48,4 +48,18 @@ class NoteRepository(private val noteService: NoteService) {
             emptyList()
         }
     }
+
+    suspend fun insertNote(note: Note): Int {
+        return try {
+            val response = noteService.insertNote(note)
+            if (response.isSuccessful){
+                Log.d("NoteRepository", "insert note success")
+            } else {
+                Log.e("NoteRepository", "insert note failed: ${response.message()}")
+            }
+        }catch (e: Exception) {
+            // 打印异常信息
+            Log.e("NoteRepository", "Error insert note: ${e.message}")
+        }
+    }
 }

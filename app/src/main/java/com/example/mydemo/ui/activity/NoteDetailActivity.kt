@@ -1,18 +1,28 @@
 package com.example.mydemo.ui.activity
 
+import android.graphics.Bitmap
+import android.media.Image
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.mydemo.R
+import com.example.mydemo.data.api.CommentService
 import com.example.mydemo.data.api.NoteService
+import com.example.mydemo.data.api.UserService
+import com.example.mydemo.data.model.Comment
 import com.example.mydemo.data.model.Note
+import com.example.mydemo.data.model.User
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -24,6 +34,8 @@ class NoteDetailActivity : AppCompatActivity() {
     }
 
     private lateinit var noteService: NoteService
+    private lateinit var userService: UserService
+    private lateinit var commentService: CommentService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         // 优化1: 延迟加载ContentView
@@ -53,6 +65,8 @@ class NoteDetailActivity : AppCompatActivity() {
         initRetrofit()
 
         fetchNoteDetails(noteId)
+        fetchNoteUserInfo(noteId)
+        fetchNoteUserAvatar(noteId)
     }
 
     private fun initRetrofit() {
@@ -62,6 +76,8 @@ class NoteDetailActivity : AppCompatActivity() {
             .build()
 
         noteService = retrofit.create(NoteService::class.java)
+        userService = retrofit.create(UserService::class.java)
+        commentService = retrofit.create(CommentService::class.java)
     }
 
     private fun initViews(noteId: Int, noteTitle: String) {
@@ -70,7 +86,7 @@ class NoteDetailActivity : AppCompatActivity() {
         val detailContentText = findViewById<TextView>(R.id.detailContentText)
         val detailLikeCountText = findViewById<TextView>(R.id.detailLikeCountText)
         val detailCommentCountText = findViewById<TextView>(R.id.detailCommentCountText)
-        val backButton = findViewById<Button>(R.id.backButton)
+        val backButton = findViewById<ImageButton>(R.id.backButton)
 
         // 设置标题
         detailTitleText.text = noteTitle
@@ -101,6 +117,66 @@ class NoteDetailActivity : AppCompatActivity() {
                     finish()
                 }
             }
+        }
+    }
+
+
+    // 获取发布note的用户信息
+    private fun fetchNoteUserInfo(userId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.d("NoteDetailActivity", "开始获取用户信息，ID: $userId")
+                // 调用API获取用户信息
+                val user = userService.getUserById(userId)
+                Log.d("NoteDetailActivity", "成功获取用户信息: ${user.userName}")
+                // 在主线程更新UI
+                withContext(Dispatchers.Main) {
+                    displayNoteUserInfo(user.userName)
+                }
+            } catch (e: Exception) {
+                Log.e("NoteDetailActivity", "获取用户信息失败", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@NoteDetailActivity, "获取用户信息失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    // 显示note发布用户名称
+    private fun displayNoteUserInfo(name: String) {
+        findViewById<TextView>(R.id.userNameText).text = name
+    }
+
+    // 获取用户头像
+    private fun fetchNoteUserAvatar(userId: Int) {
+        // 使用Glide直接加载图像
+        val imageView = findViewById<ImageView>(R.id.userAvatar)
+        val imageUrl = "http://172.21.96.1:8080/users/getUserAvatar/$userId"
+
+        Glide.with(this)
+            .load(imageUrl)
+            .placeholder(R.drawable.ic_user) // 设置占位图
+            .error(R.drawable.ic_add) // 设置错误图片
+            .into(imageView)
+
+        Log.d("NoteDetailActivity", "开始加载用户头像: $imageUrl")
+    }
+
+
+    // 获取评论
+    private suspend fun fetchComments(noteId: Int): List<Comment>? {
+        return try {
+            val response: Response<List<Comment>> = commentService.getNoteComments(noteId)
+            if (response.isSuccessful && response.body() is List<Comment>) {
+                Log.d("NoteDetailActivity", "成功获取评论，数量: ${response.body()?.size}")
+                response.body()
+            } else {
+                Log.e("NoteDetailActivity", "获取评论失败，响应码: ${response.code()}")
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("NoteDetailActivity", "获取评论失败", e)
+            null
         }
     }
 

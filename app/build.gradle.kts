@@ -85,6 +85,9 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
 
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    kapt("com.github.bumptech.glide:compiler:4.14.2")
+
     // 排除旧版本的注解库
     configurations.all {
         exclude(group = "com.intellij", module = "annotations")

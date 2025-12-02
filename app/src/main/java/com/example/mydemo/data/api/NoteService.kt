@@ -2,6 +2,7 @@ package com.example.mydemo.data.api
 
 import com.example.mydemo.data.model.Note
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -24,9 +25,9 @@ interface NoteService {
     suspend fun getNoteById(
         @Path("noteId") noteId: Int
     ): Note
-//
-//    @POST("insertNote")
-//    suspend fun insertNote(note: Note)
+
+    @POST("note/insertNote")
+    suspend fun insertNote(@Body note: Note): Response<Long>
 //
 //    @PUT("updateNote")
 //    suspend fun updateNote(note: Note)
