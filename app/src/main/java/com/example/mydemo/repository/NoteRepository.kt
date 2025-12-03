@@ -32,10 +32,6 @@ class NoteRepository(private val noteService: NoteService) {
         return try {
             val response = noteService.getNextNotes(noteId)
             Log.d("NoteRepository", "response body size: ${response.body()?.size}")
-            // 打印请求URL
-            Log.d("NoteRepository", "using url: ${response.raw().request().url()}")
-            // 打印响应体
-            Log.d("NoteRepository", "response body: ${response.message()}")
 
             if (response.isSuccessful) {
                 response.body() ?: emptyList()

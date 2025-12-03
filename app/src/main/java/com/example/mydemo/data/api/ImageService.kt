@@ -1,8 +1,12 @@
 package com.example.mydemo.data.api
 
 import com.example.mydemo.data.model.Image
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Multipart
+import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface ImageService {
@@ -20,4 +24,11 @@ interface ImageService {
     suspend fun getImageByPath(
         @Path("imagePath") imagePath: String
     ): ByteArray
+
+    @Multipart
+    @POST("api/files/upload/{noteId}")
+    suspend fun uploadImage(
+        @Path("noteId") noteId: Long,
+        @Part file: MultipartBody.Part
+    ): Response<Map<String, String>>
 }
