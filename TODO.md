@@ -1,3 +1,34 @@
+# Design
+
+## 基本数据结构与类图
+
+![rednote.webp](rednote.webp)
+
+## 代码架构
+
+```
+java
+├── data 数据类
+│   ├── api 网络接口
+│   ├── dao 数据库操作接口(项目弃用)
+│   ├── model 数据模型
+├── repository 数据仓库
+├── ui
+│   ├── activity 
+│   ├── fragment 
+│   ├── adapters 数据adpter
+── view 视图
+
+
+res
+├── drawable 图片资源
+├── layout 布局文件
+├── menu 菜单文件
+├── values 资源文件
+── xml 
+```
+
+
 # TODO
 
 ## Remain
