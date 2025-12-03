@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.mydemo.R
 import com.example.mydemo.data.api.CommentService
@@ -21,6 +22,7 @@ import com.example.mydemo.data.api.UserService
 import com.example.mydemo.data.model.Comment
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.data.model.User
+import com.example.mydemo.ui.adpter.CommentAdapter
 import com.example.mydemo.ui.adpter.ImageAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,15 +44,13 @@ class NoteDetailActivity : AppCompatActivity() {
     private lateinit var commentService: CommentService
     private lateinit var imageService: ImageService
     private lateinit var imageAdapter: ImageAdapter
+    private lateinit var commentAdapter: CommentAdapter
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        // 优化1: 延迟加载ContentView
-        super.onCreate(null) // 避免自动恢复状态，提高启动速度
-        // 优化2: 预设主题以减少白屏时间
+        super.onCreate(null)
         setTheme(R.style.Theme_MyDemo)
         setContentView(R.layout.activity_note_detail)
-
 
         // 获取传递过来的Note ID
         val noteId = intent.getIntExtra(EXTRA_NOTE_ID, -1)
@@ -75,6 +75,7 @@ class NoteDetailActivity : AppCompatActivity() {
         fetchNoteUserInfo(noteId)
         fetchNoteUserAvatar(noteId)
         fetchNoteImages(noteId) // 获取笔记图片
+        fetchComments(noteId) // 获取笔记评论
     }
 
     private fun initRetrofit() {
@@ -108,10 +109,15 @@ class NoteDetailActivity : AppCompatActivity() {
 
         // 初始化图片RecyclerView
         val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
-        imageRecyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        imageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) // 添加这一行
         imageAdapter = ImageAdapter(emptyList())
         imageRecyclerView.adapter = imageAdapter
+
+        // 初始化评论RecyclerView
+        val commentRecyclerView = findViewById<RecyclerView>(R.id.commentRecyclerView)
+        commentRecyclerView.layoutManager = LinearLayoutManager(this)
+        commentAdapter = CommentAdapter(emptyList())
+        commentRecyclerView.adapter = commentAdapter
     }
 
     private fun fetchNoteDetails(noteId: Int) {
@@ -143,32 +149,43 @@ class NoteDetailActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d("NoteDetailActivity", "开始获取笔记图片，ID: $noteId")
-                // 调用API获取笔记图片
-                val response = imageService.getImagesByNoteId(noteId)
+                // 调用API获取笔记图片列表
+                val response = imageService.getImagesListByNoteId(noteId)
                 if (response.isSuccessful) {
                     val images = response.body() ?: emptyList()
                     Log.d("NoteDetailActivity", "成功获取笔记图片，数量: ${images.size}")
-
                     // 在主线程更新UI
                     withContext(Dispatchers.Main) {
-                        imageAdapter = ImageAdapter(images)
-                        findViewById<RecyclerView>(R.id.imageRecyclerView).adapter = imageAdapter
+                        // 更新现有adapter的数据而不是创建新的adapter
+                        (imageAdapter as ImageAdapter).apply {
+                            // 这里需要修改ImageAdapter以支持更新数据
+                            notifyDataSetChanged() // 需要在ImageAdapter中添加更新数据的方法
+                        }
+                        // 或者直接重新设置adapter的数据
+                        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
+                        imageRecyclerView.adapter = ImageAdapter(images)
                     }
                 } else {
                     // 处理空列表情况
                     Log.e("NoteDetailActivity", "获取笔记图片失败，响应码: ${response.code()}")
                     withContext(Dispatchers.Main) {
-                        imageAdapter = ImageAdapter(emptyList())
-                        findViewById<RecyclerView>(R.id.imageRecyclerView).adapter = imageAdapter
-                        Toast.makeText(this@NoteDetailActivity, "获取笔记图片失败: ${response.message()}", Toast.LENGTH_LONG).show()
+                        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
+                        imageRecyclerView.adapter = ImageAdapter(emptyList())
+                        Toast.makeText(
+                            this@NoteDetailActivity,
+                            "获取笔记图片失败: ${response.message()}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             } catch (e: Exception) {
                 Log.e("NoteDetailActivity", "获取笔记图片失败", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@NoteDetailActivity, "获取笔记图片失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
-
     // 获取发布note的用户信息
     private fun fetchNoteUserInfo(userId: Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -212,19 +229,39 @@ class NoteDetailActivity : AppCompatActivity() {
 
 
     // 获取评论
-    private suspend fun fetchComments(noteId: Int): List<Comment>? {
-        return try {
-            val response: Response<List<Comment>> = commentService.getNoteComments(noteId)
-            if (response.isSuccessful && response.body() is List<Comment>) {
-                Log.d("NoteDetailActivity", "成功获取评论，数量: ${response.body()?.size}")
-                response.body()
-            } else {
-                Log.e("NoteDetailActivity", "获取评论失败，响应码: ${response.code()}")
-                null
+    private fun fetchComments(noteId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                Log.d("NoteDetailActivity", "开始获取笔记评论，ID: $noteId")
+                val comments = commentService.getNoteComments(noteId)
+                if (comments.isSuccessful) {
+                    val comments = comments.body() ?: emptyList()
+                    Log.d("NoteDetailActivity", "成功获取笔记评论，数量: ${comments.size}")
+                    // 在主线程更新UI
+                    withContext(Dispatchers.Main) {
+                        commentAdapter = CommentAdapter(comments)
+                        val commentRecyclerView = findViewById<RecyclerView>(R.id.commentRecyclerView)
+                        commentRecyclerView.adapter = commentAdapter
+                    }
+                } else {
+                    Log.e("NoteDetailActivity", "获取笔记评论失败")
+                    withContext(Dispatchers.Main) {
+                        commentAdapter = CommentAdapter(emptyList())
+                        val commentRecyclerView = findViewById<RecyclerView>(R.id.commentRecyclerView)
+                        commentRecyclerView.adapter = commentAdapter
+                        Toast.makeText(
+                            this@NoteDetailActivity,
+                            "获取笔记评论失败",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("NoteDetailActivity", "获取笔记评论失败", e)
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@NoteDetailActivity, "获取笔记评论失败: ${e.message}", Toast.LENGTH_LONG).show()
+                }
             }
-        } catch (e: Exception) {
-            Log.e("NoteDetailActivity", "获取评论失败", e)
-            null
         }
     }
 
@@ -234,4 +271,6 @@ class NoteDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.detailLikeCountText).text = "Likes: ${note.likes}"
         findViewById<TextView>(R.id.detailCommentCountText).text = "Comments: ${note.comments}"
     }
+
+
 }

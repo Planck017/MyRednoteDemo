@@ -39,7 +39,7 @@ class NoteAdapter(private val noteList: MutableList<Note>) :
         // 加载封面图片
         // TODO 封面接口调用
         if (note.coverName != null) {
-            val imageUrl = "http://172.21.96.1:8080/note/cover/${note.coverName}"
+            val imageUrl = "http://172.21.96.1:8080/images/getImageByPath/${note.coverName}"
             // 加载封面图片
             Glide.with(holder.itemView.context)
                 .load(imageUrl)

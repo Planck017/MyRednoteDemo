@@ -72,7 +72,8 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
     implementation(libs.androidx.swiperefreshlayout)
     implementation(libs.androidx.monitor)
-    kapt(libs.androidx.room.compiler) // 使用kapt而不是implementation
+    implementation(libs.androidx.viewpager2)
+    kapt(libs.androidx.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

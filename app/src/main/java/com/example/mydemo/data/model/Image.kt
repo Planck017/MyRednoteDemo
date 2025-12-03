@@ -13,6 +13,6 @@ data class Image(
     @ColumnInfo(name = "note_id")
     val noteId: Int,
 
-    @ColumnInfo(name = "image_url")
-    val imageUrl: String,
+    @ColumnInfo(name = "file_name")
+    val fileName: String,
 )
