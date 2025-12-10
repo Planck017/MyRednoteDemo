@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.model.Image
 
@@ -26,9 +27,9 @@ class ImageAdapter(private val imageList: List<Image>) :
         val image = imageList[position]
         // 使用Glide加载图片
         Glide.with(holder.imageView.context)
-            .load("http://172.21.96.1:8080/images/getImageByPath/${image.fileName}")
+            .load(BuildConfig.API_BASE_URL + "images/getImageByPath/${image.fileName}")
             .placeholder(R.drawable.ic_home) // 设置占位图
-            .error(R.drawable.ic_add) // 设置错误图片
+            .error(R.drawable.ic_home) // 设置错误图片
             .into(holder.imageView)
     }
 

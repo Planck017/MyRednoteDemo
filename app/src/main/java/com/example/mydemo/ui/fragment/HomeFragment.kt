@@ -13,7 +13,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.AppDatabase
 import com.example.mydemo.data.api.NoteService
@@ -55,7 +57,7 @@ class HomeFragment : Fragment() {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout)
         // 初始化ViewModel
         val noteService = Retrofit.Builder()
-            .baseUrl("http://172.21.96.1:8080/") // 替换为你的API基础URL
+            .baseUrl(BuildConfig.API_BASE_URL) // 替换为你的API基础URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(NoteService::class.java)
@@ -96,10 +98,10 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
 
         noteAdapter = NoteAdapter(noteList)
-        val gridLayoutManager = GridLayoutManager(context,2)
+        val staggeredGridLayoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
 
         recyclerView.apply {
-            layoutManager = gridLayoutManager
+            layoutManager = staggeredGridLayoutManager
             adapter = noteAdapter
 
             /**
@@ -109,9 +111,10 @@ class HomeFragment : Fragment() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
 
-                    val visibleItemCount = gridLayoutManager.childCount
-                    val totalItemCount = gridLayoutManager.itemCount
-                    val firstVisibleItemPosition = gridLayoutManager.findFirstVisibleItemPosition()
+                    val visibleItemCount = staggeredGridLayoutManager.childCount
+                    val totalItemCount = staggeredGridLayoutManager.itemCount
+                    val firstVisibleItemPositions = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
+                    val firstVisibleItemPosition = if (firstVisibleItemPositions.isNotEmpty()) firstVisibleItemPositions[0] else 0
 
                     if (!isLoading // 确保不在加载中
                         && visibleItemCount > 0 && // 确保有可见项

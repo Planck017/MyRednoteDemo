@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.ui.activity.NoteDetailActivity
@@ -39,7 +40,7 @@ class NoteAdapter(private val noteList: MutableList<Note>) :
         // 加载封面图片
         // TODO 封面接口调用
         if (note.coverName != null) {
-            val imageUrl = "http://172.21.96.1:8080/images/getImageByPath/${note.coverName}"
+            val imageUrl = BuildConfig.API_BASE_URL + "images/getImageByPath/${note.coverName}"
             // 加载封面图片
             Glide.with(holder.itemView.context)
                 .load(imageUrl)

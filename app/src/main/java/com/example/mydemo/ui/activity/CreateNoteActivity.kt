@@ -10,11 +10,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.api.ImageService
 import com.example.mydemo.data.api.NoteService
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.ui.adpter.SelectedImageAdapter
+import com.google.gson.internal.GsonBuildConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,7 +64,7 @@ class CreateNoteActivity : AppCompatActivity(), SelectedImageAdapter.OnImageRemo
     // 添加初始化Retrofit的方法
     private fun initRetrofit() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://172.21.96.1:8080/") // 替换为你的API基础URL
+            .baseUrl(BuildConfig.API_BASE_URL) // 替换为你的API基础URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         noteService = retrofit.create(NoteService::class.java)

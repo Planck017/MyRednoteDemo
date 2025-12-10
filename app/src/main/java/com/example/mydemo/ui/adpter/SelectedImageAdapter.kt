@@ -36,7 +36,7 @@ class SelectedImageAdapter(
         Glide.with(holder.imageViewSelected.context)
             .load(uri)
             .placeholder(R.drawable.ic_home)
-            .error(R.drawable.ic_add)
+            .error(R.drawable.ic_launcher_background)
             .into(holder.imageViewSelected)
 
         // 设置删除按钮点击事件

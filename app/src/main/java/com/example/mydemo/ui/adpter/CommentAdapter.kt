@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.model.Comment
 
@@ -35,7 +36,7 @@ class CommentAdapter(private val commentList: List<Comment>) :
         holder.likeCountText.text = "Likes: ${comment.likes}"
 
 
-        val imageUrl = "http://172.21.96.1:8080/users/getUserAvatar/${comment.userId}"
+        val imageUrl = BuildConfig.API_BASE_URL + "users/getUserAvatar/${comment.userId}"
         Glide.with(holder.itemView.context)
             .load(imageUrl)
             .placeholder(R.drawable.ic_user) // 设置占位图

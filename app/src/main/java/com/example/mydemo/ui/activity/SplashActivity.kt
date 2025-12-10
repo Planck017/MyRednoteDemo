@@ -20,15 +20,12 @@ class SplashActivity : AppCompatActivity() {
             val token: String? = sharedPreferences.getString("token", null)
             if (token != null) {
                 // token存在，进行后续操作
-                // 例如，跳转到主界面
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
-                // 例如，跳转到主界面
             } else {
                 // token不存在，进行登录操作
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
-                // 例如，跳转到登录界面
             }
             finish()
         }, 1000)

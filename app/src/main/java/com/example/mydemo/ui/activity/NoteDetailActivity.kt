@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.api.CommentService
 import com.example.mydemo.data.api.ImageService
@@ -80,7 +81,7 @@ class NoteDetailActivity : AppCompatActivity() {
 
     private fun initRetrofit() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("http://172.21.96.1:8080/") // 替换为你的API基础URL
+            .baseUrl(BuildConfig.API_BASE_URL) // 替换为你的API基础URL
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -216,7 +217,7 @@ class NoteDetailActivity : AppCompatActivity() {
     private fun fetchNoteUserAvatar(userId: Int) {
         // 使用Glide直接加载图像
         val imageView = findViewById<ImageView>(R.id.userAvatar)
-        val imageUrl = "http://172.21.96.1:8080/users/getUserAvatar/$userId"
+        val imageUrl =  BuildConfig.API_BASE_URL + "users/getUserAvatar/$userId"
 
         Glide.with(this)
             .load(imageUrl)
