@@ -109,8 +109,8 @@ class NoteDetailActivity : AppCompatActivity() {
         }
 
         // 初始化图片RecyclerView
-        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
-        imageRecyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false) // 添加这一行
+        val imageRecyclerView = findViewById<ViewPager2>(R.id.imageViewPager)
+        imageRecyclerView.orientation = ViewPager2.ORIENTATION_HORIZONTAL
         imageAdapter = ImageAdapter(emptyList())
         imageRecyclerView.adapter = imageAdapter
 
@@ -163,14 +163,14 @@ class NoteDetailActivity : AppCompatActivity() {
                             notifyDataSetChanged() // 需要在ImageAdapter中添加更新数据的方法
                         }
                         // 或者直接重新设置adapter的数据
-                        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
-                        imageRecyclerView.adapter = ImageAdapter(images)
+                        val imageViewPager = findViewById<ViewPager2>(R.id.imageViewPager)
+                        imageViewPager.adapter = ImageAdapter(images)
                     }
                 } else {
                     // 处理空列表情况
                     Log.e("NoteDetailActivity", "获取笔记图片失败，响应码: ${response.code()}")
                     withContext(Dispatchers.Main) {
-                        val imageRecyclerView = findViewById<RecyclerView>(R.id.imageRecyclerView)
+                        val imageRecyclerView = findViewById<ViewPager2>(R.id.imageViewPager)
                         imageRecyclerView.adapter = ImageAdapter(emptyList())
                         Toast.makeText(
                             this@NoteDetailActivity,
