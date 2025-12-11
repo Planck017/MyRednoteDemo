@@ -11,6 +11,7 @@ import com.example.mydemo.R
 import com.example.mydemo.data.AppDatabase
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.data.model.User
+import com.example.mydemo.util.SharePreferencesUtil
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -54,7 +55,6 @@ class LoginActivity : AppCompatActivity() {
         lifecycleScope.launch {
             val user = database.userDao().getUserByUsernameAndPassword(username, password)
             if (user != null) {
-
                 // 登录成功，保存token到sp中
                 saveTokenToSharedPreferences(user.userName)
                 // 登录成功，显示一个Toast提示

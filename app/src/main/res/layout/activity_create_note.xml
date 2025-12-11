@@ -5,6 +5,8 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
+
     <EditText
         android:id="@+id/editNoteTitle"
         android:layout_width="match_parent"
@@ -13,7 +15,9 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="16dp"
-        android:inputType="text" />
+        android:inputType="text"
+        android:background="#F5F5F5"
+        android:padding="12dp" />
 
     <!-- 添加图片选择按钮 -->
     <Button
@@ -51,7 +55,9 @@
                 android:layout_marginBottom="24dp"
                 android:gravity="top"
                 android:inputType="textMultiLine"
-                android:minLines="5" />
+                android:minLines="5"
+                android:background="#F5F5F5"
+                android:padding="12dp" />
 
         </LinearLayout>
     </ScrollView>
