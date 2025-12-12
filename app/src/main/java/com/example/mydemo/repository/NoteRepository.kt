@@ -3,6 +3,7 @@ package com.example.mydemo.repository
 import android.util.Log
 import android.widget.Toast
 import com.example.mydemo.data.api.NoteService
+import com.example.mydemo.data.dto.NoteFragmentItem
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.ui.fragment.HomeFragment
 import com.example.mydemo.view.NoteViewModel
@@ -56,6 +57,23 @@ class NoteRepository(private val noteService: NoteService) {
         }catch (e: Exception) {
             // 打印异常信息
             Log.e("NoteRepository", "Error insert note: ${e.message}")
+        }
+    }
+
+    suspend fun getNoteRecycleViews(noteId: Int): List<NoteFragmentItem> {
+        return try {
+            val response = noteService.getNoteRecycleViews(noteId)
+            if (response.isSuccessful){
+                Log.d("NoteRepository", "get note recycle views success")
+                response.body() ?: emptyList()
+            } else {
+                Log.e("NoteRepository", "get note recycle views failed: ${response.message()}")
+                emptyList()
+            }
+        }catch (e: Exception) {
+            // 打印异常信息
+            Log.e("NoteRepository", "Error get note recycle views: ${e.message}")
+            emptyList()
         }
     }
 }

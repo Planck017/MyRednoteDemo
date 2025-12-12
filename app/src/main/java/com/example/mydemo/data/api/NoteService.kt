@@ -1,5 +1,7 @@
 package com.example.mydemo.data.api
 
+import com.example.mydemo.data.dto.NoteDetailDto
+import com.example.mydemo.data.dto.NoteFragmentItem
 import com.example.mydemo.data.model.Note
 import retrofit2.Response
 import retrofit2.http.Body
@@ -28,11 +30,15 @@ interface NoteService {
 
     @POST("note/insertNote")
     suspend fun insertNote(@Body note: Note): Response<Long>
-//
-//    @PUT("updateNote")
-//    suspend fun updateNote(note: Note)
-//
-//    @DELETE("deleteNote/{id}")
-//    suspend fun deleteNote(id: Int)
+
+    @GET("note/getNoteRecycleViews/{noteId}")
+    suspend fun getNoteRecycleViews(
+        @Path("noteId") noteId: Int
+    ): Response<List<NoteFragmentItem>>
+
+    @GET("note/getNoteDetail/{noteId}")
+    suspend fun getNoteDetail(
+        @Path("noteId") noteId: Int
+    ): Response<NoteDetailDto>
 
 }

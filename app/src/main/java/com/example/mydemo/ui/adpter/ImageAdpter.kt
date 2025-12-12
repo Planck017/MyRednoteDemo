@@ -10,7 +10,7 @@ import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.model.Image
 
-class ImageAdapter(private val imageList: List<Image>) :
+class ImageAdapter(private val imageList: List<Int>) :
     RecyclerView.Adapter<ImageAdapter.ImageViewHolder>() {
 
     class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,7 +27,7 @@ class ImageAdapter(private val imageList: List<Image>) :
         val image = imageList[position]
         // 使用Glide加载图片
         Glide.with(holder.imageView.context)
-            .load(BuildConfig.API_BASE_URL + "images/getImageByPath/${image.fileName}")
+            .load(BuildConfig.API_BASE_URL + "images/getImage/$image")
             .placeholder(R.drawable.ic_home) // 设置占位图
             .error(R.drawable.ic_home) // 设置错误图片
             .into(holder.imageView)

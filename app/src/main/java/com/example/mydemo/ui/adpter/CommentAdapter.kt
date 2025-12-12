@@ -10,9 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
+import com.example.mydemo.data.dto.CommentRecycleViewItem
 import com.example.mydemo.data.model.Comment
 
-class CommentAdapter(private val commentList: List<Comment>) :
+class CommentAdapter(private val commentList: List<CommentRecycleViewItem>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
     class CommentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -31,16 +32,15 @@ class CommentAdapter(private val commentList: List<Comment>) :
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = commentList[position]
         // 这里简化处理，实际应该通过userId获取用户名
-        holder.userNameText.text = "用户${comment.userId}"
+        holder.userNameText.text = "用户${comment.userName}"
         holder.commentContentText.text = comment.commentContent
-        holder.likeCountText.text = "Likes: ${comment.likes}"
 
 
-        val imageUrl = BuildConfig.API_BASE_URL + "users/getUserAvatar/${comment.userId}"
+        val imageUrl = BuildConfig.API_BASE_URL + "images/getImage/${comment.avatar}"
         Glide.with(holder.itemView.context)
             .load(imageUrl)
             .placeholder(R.drawable.ic_user) // 设置占位图
-            .error(R.drawable.ic_add) // 设置错误图片
+            .error(R.drawable.ic_launcher_background) // 设置错误图片
             .into(holder.userAvatar)
 
         Log.d("NoteDetailActivity", "开始加载用户头像: $imageUrl")

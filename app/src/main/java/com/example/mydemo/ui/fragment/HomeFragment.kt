@@ -19,6 +19,7 @@ import com.example.mydemo.BuildConfig
 import com.example.mydemo.R
 import com.example.mydemo.data.AppDatabase
 import com.example.mydemo.data.api.NoteService
+import com.example.mydemo.data.dto.NoteFragmentItem
 import com.example.mydemo.data.model.Note
 import com.example.mydemo.repository.NoteRepository
 import com.example.mydemo.ui.adpter.NoteAdapter
@@ -34,7 +35,7 @@ class HomeFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var noteAdapter: NoteAdapter
-    private val noteList = mutableListOf<Note>()
+    private val noteList = mutableListOf<NoteFragmentItem>()
     private lateinit var database: AppDatabase
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var noteViewModel: NoteViewModel

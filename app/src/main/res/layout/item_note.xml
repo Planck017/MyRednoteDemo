@@ -40,20 +40,35 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal">
 
+            <!-- 头像和用户名 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/avatarImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="#CCCCCC" />
+
+                <TextView
+                    android:id="@+id/usernameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Username"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/likeCountText"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_gravity="end"
                 android:text="Likes: 0" />
-
-            <TextView
-                android:id="@+id/commentCountText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Comments: 0" />
-
         </LinearLayout>
 
     </LinearLayout>

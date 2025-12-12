@@ -7,24 +7,25 @@ import com.example.mydemo.repository.NoteRepository
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.example.mydemo.data.dto.NoteFragmentItem
 import com.example.mydemo.data.model.Note
 
 class NoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
-    val _notes = MutableLiveData<List<Note>>()
-    val notes: LiveData<List<Note>> = _notes
+    val _notes = MutableLiveData<List<NoteFragmentItem>>()
+    val notes: LiveData<List<NoteFragmentItem>> = _notes
 
 
-     suspend fun loadNotes() : List<Note>{
-         return noteRepository.getNotes(0)
+     suspend fun loadNotes() : List<NoteFragmentItem>{
+         return noteRepository.getNoteRecycleViews(0)
      }
 
-     suspend fun loadNextNotes(noteId: Int) : List<Note> {
-         return noteRepository.getNextNotes(noteId)
+     suspend fun loadNextNotes(noteId: Int) : List<NoteFragmentItem> {
+         return noteRepository.getNoteRecycleViews(noteId)
      }
 
     // 获取当前 LiveData 中的最后一项笔记的 ID
     fun getLastNoteId(): Int? {
-        return _notes.value?.lastOrNull()?.noteId
+        return _notes.value?.lastOrNull()?.id
     }
 
     // 清空 LiveData 中的数据
@@ -33,7 +34,7 @@ class NoteViewModel(private val noteRepository: NoteRepository) : ViewModel() {
     }
 
     // 向 LiveData 中添加新的笔记
-    fun addNote(newNotes: List<Note>) {
+    fun addNote(newNotes: List<NoteFragmentItem>) {
         // 确保旧数据不为空
         _notes.value = _notes.value.orEmpty() + newNotes
     }
